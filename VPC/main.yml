@@ -1,0 +1,47 @@
+---
+- name: Create VPC
+  hosts: localhost
+
+  tasks:
+    - name: create VPC
+      amazon.aws.ec2_vpc_net:
+        name: Dev-VPC
+        cidr_block: 192.168.0.0/16
+        tags:
+          Env: Dev
+          Ansible: Yes
+      register: vpc
+    
+    - name: Create Internet gateway
+      amazon.aws.ec2_vpc_igw:
+        vpc_id: "{{ vpc.vpc.id }}"
+        state: present
+      register: igw
+      
+    - name: Create Private subnets
+      amazon.aws.ec2_vpc_subnet:
+        state: present
+        vpc_id: "{{ vpc.vpc.id }}"
+        cidr: 192.168.1.0/24
+        tags:
+          Name: Private
+          Ansible: Yes
+      register: private
+    
+    - name: Create Public subnets
+      amazon.aws.ec2_vpc_subnet:
+        state: present
+        vpc_id: "{{ vpc.vpc.id }}"
+        cidr: 192.168.10.0/24
+        tags:
+          Name: Public
+          Ansible: Yes
+      register: public
+
+    - name: Create new nat gateway and allocate new EIP if a nat gateway does not yet exist in the subnet.
+      amazon.aws.ec2_vpc_nat_gateway:
+        state: present
+        subnet_id: "{{ public.subnet.id }}"
+        wait: true
+        if_exist_do_not_create: true
+      register: nat_gw
