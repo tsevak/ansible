@@ -1,0 +1,13 @@
+---
+- name: Create key pair
+  hosts:  localhost
+
+  tasks:
+    - name: create a new EC2 key pair, returns generated private key
+      amazon.aws.ec2_key:
+        name: key
+      register: key
+
+    - name: Print registered private key
+      debug:
+        var: key.key.private_key
