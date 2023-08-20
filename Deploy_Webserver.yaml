@@ -1,0 +1,29 @@
+---
+- name: Deploy and start Apache service
+  hosts:  all
+  become: true
+
+  tasks:
+    - name: Install require pkgs 
+      ansible.builtin.yum:
+        name:
+          - httpd
+          - httpd-tools
+          - firewalld
+        state: present
+    
+    - name: Enable require service on boot and let started now
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      with_items:
+        - httpd
+        - firewalld
+    
+    - name: Enable firewall port for webserver
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        immediate: true
+        state: enabled
