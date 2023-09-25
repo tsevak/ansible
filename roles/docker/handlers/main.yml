@@ -1,0 +1,7 @@
+---
+
+- name: Restart Docker service to take in effect and keep On after reboot Host
+  service:
+    name: docker
+    state: restarted
+    enabled: yes

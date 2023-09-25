@@ -1,0 +1,29 @@
+---
+
+os_pkgs:
+- apt-transport-https
+- ca-certificates
+- curl
+- gnupg
+- software-properties-common
+- virtualenv
+- net-tools
+- tree
+
+docker_ce_pkgs:
+- docker-ce
+- docker-ce-cli
+- containerd.io
+- docker-buildx-plugin
+- docker-compose-plugin
+- docker-compose
+
+docker_repo_key: "https://download.docker.com/linux/ubuntu/gpg"
+
+docker_repo: "https://download.docker.com/linux/ubuntu"
+
+second_disk: /dev/sda
+
+aliases: 
+- { alias: 'c', command: 'clear' }
+- { alias: 'll', command: 'ls -lGp' }

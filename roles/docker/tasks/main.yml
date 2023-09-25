@@ -1,0 +1,59 @@
+---
+- name: Add useful Alias
+  lineinfile:
+    path: ~/.bashrc
+    state: present
+    line: 'alias {{ item.alias }}="{{ item.command }}"'
+  with_items: "{{ aliases }}"
+
+- name: Install aptitude
+  apt:
+    name: aptitude
+    state: latest
+    update_cache: true
+
+- name: Install required system packages
+  apt:
+    name: "{{ os_pkgs }}"
+    state: latest
+    update_cache: true
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: "{{ docker_repo_key}}"
+    state: present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb "{{ docker_repo }}" jammy stable
+    state: present
+
+- name: Create VG for Docker data Repository
+  lvg:
+    vg: vg-container
+    pvs: "{{ second_disk }}"
+
+- name: Create a LV for Docker data lvm
+  lvol:
+    vg: vg-container
+    lv: lv-container
+    size: 100%FREE
+    shrink: no
+
+- name: Create a ext4 FS for LV
+  filesystem:
+    fstype: ext4
+    dev: /dev/vg-container/lv-container
+
+- name: Mount LV and enable in fstab 
+  mount:
+    path: /var/lib/docker
+    src: /dev/vg-container/lv-container
+    fstype: ext4
+    state: mounted
+
+- name: Update apt and install docker-ce
+  apt:
+    name: "{{ docker_ce_pkgs }}"
+    state: latest
+    update_cache: true  
