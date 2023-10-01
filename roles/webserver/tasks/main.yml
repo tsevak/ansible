@@ -1,0 +1,16 @@
+---
+- name: Install Apache web server
+  apt:
+    name: apache2
+    state: present
+
+- name: Start Apache service and enbale on boot
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+
+- name: Setup index.html
+  copy:
+    src: index.html
+    dest: /var/www/html/index.html
