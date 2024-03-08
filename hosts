@@ -1,2 +1,11 @@
 [HomeLab]
 192.168.31.233
+
+[Boxes]
+192.168.31.100
+192.168.31.101
+192.168.31.102
+
+[Boxes:vars]
+ansible_user=vagrant
+ansible_ssh_private_key_file=~/.ssh/boxes-key
