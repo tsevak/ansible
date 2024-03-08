@@ -1,0 +1,16 @@
+---
+- name: Get Uptime of manged hosts
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Uptime
+      ansible.builtin.shell:
+        cmd: uptime -p | awk -F ',' {'print $1'}
+        executable: /bin/bash
+      register: uptime_output
+
+
+    - name: Display uptime
+      ansible.builtin.debug:
+        var: uptime_output.stdout
