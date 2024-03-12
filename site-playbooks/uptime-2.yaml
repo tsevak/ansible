@@ -1,0 +1,12 @@
+---
+- name: Find Hosts Uptime
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: Get Uptime
+      ansible.builtin.shell: uptime -s
+      register: uptime_result
+
+    - name: Display Uptime
+      ansible.builtin.debug:
+        msg: "Host {{ inventory_hostname }} has been up since {{ uptime_result.stdout }}"

@@ -1,2 +1,4 @@
 .vscode
 lab_private_key
+*.csv
+test*
