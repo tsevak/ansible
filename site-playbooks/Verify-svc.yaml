@@ -1,0 +1,28 @@
+---
+- name: Let check service status and its port check
+  hosts: Boxes
+  become: true
+  vars:
+    service_name:
+      80: httpd
+      22: sshd
+
+  tasks:
+    - name: Check if ports are open
+      ansible.builtin.wait_for:
+        host: "{{ ansible_host }}"
+        port: "{{ item }}"
+        state: started
+        timeout: 2
+      ignore_errors: true
+      with_items:
+        - 80
+        - 22
+
+    - name: Start service for closed ports
+      ansible.builtin.systemd:
+        name: "{{ service_name[item] }}"
+        state: started
+      with_items:
+        - 80
+        - 22
