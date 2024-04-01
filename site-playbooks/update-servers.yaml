@@ -1,0 +1,34 @@
+---
+- name: Let verify update and reboot hosts
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Update package cache
+      ansible.builtin.yum:
+        update_cache: true
+
+    - name: Check for available updates
+      ansible.builtin.yum:
+        list: updates
+      register: available_updates
+
+    - name: Print available updates
+      ansible.builtin.debug:
+        msg: "{{ available_updates }}"
+
+    - name: Update all packages
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+        update_only: true
+      when: available_updates is defined and available_updates.results | length > 0
+
+    - name: Reboot the system
+      ansible.builtin.reboot:
+      when: available_updates is defined and available_updates.results | length > 0
+
+    - name: Wait for the system to reboot
+      ansible.builtin.wait_for_connection:
+        timeout: 300
+      when: available_updates is defined and available_updates.results | length > 0
