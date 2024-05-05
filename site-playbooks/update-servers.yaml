@@ -1,12 +1,11 @@
 ---
-- name: Let verify update and reboot hosts
-  become: true
-  gather_facts: false
+ - name: Let verify update and reboot hosts
+   gather_facts: false
 
-  tasks:
-    - name: Update package cache
-      ansible.builtin.yum:
-        update_cache: true
+   tasks:
+     - name: Update package cache
+       ansible.builtin.yum:
+         update_cache: true
 
     - name: Check for available updates
       ansible.builtin.yum:

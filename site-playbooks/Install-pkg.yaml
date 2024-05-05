@@ -1,0 +1,20 @@
+---
+- name: Install httpd and openldap
+  hosts: Boxes
+  become: true
+
+  vars:
+    supported_os:
+      - RedHat
+      - CentOS
+      - Rocky
+
+  tasks:
+    - name: Install pkgs
+      ansible.builtin.yum:
+        name:
+          - httpd
+          - openldap
+        state: present
+      when:
+        - ansible_distribution in supported_os

@@ -1,0 +1,28 @@
+---
+- name: Debug module demo
+  hosts: Boxes
+  gather_facts: true
+
+  vars:
+    os: RockyLinux
+
+  tasks:
+    - name: Let run by default module itself
+      ansible.builtin.debug:    # by default it prints "Hello world!"
+
+    - name: Let print custom msg
+      ansible.builtin.debug:
+        msg: "Hello debug module"
+
+    - name: Let print something from facts
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is running {{ ansible_distribution }}"
+
+    - name: Let print defined var os
+      ansible.builtin.debug:
+        var: os
+
+    - name: Let set verbosity ## This task only run when verbosity set to 2
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} is running fine."
+        verbosity: 2
