@@ -1,0 +1,44 @@
+---
+- name: Variable demo
+  hosts: localhost
+  gather_facts: true
+
+  vars:
+    country: 'Australia'  # standard string Variable
+    is_ok: false      # boolean Variable true or false
+    cars:             # Array
+      - Toyota
+      - Nissan
+      - Honda
+
+    currency:             # Dictionary
+      'Australia': 'AUD'
+      'USA': 'USD'
+      'India': 'INR'
+      'UK': 'POUND'
+
+  tasks:
+    - name: Let print country var
+      ansible.builtin.debug:
+        var: country
+
+    - name: Print hostname when is_ok defined boolean true
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}"
+      when: is_ok
+
+    - name: Print Array
+      ansible.builtin.debug:
+        var: cars
+
+    - name: Print specific index of Array
+      ansible.builtin.debug:
+        var: cars[1]
+
+    - name: Print Dictionary
+      ansible.builtin.debug:
+        var: currency
+
+    - name: Print specific element of Dictionary
+      ansible.builtin.debug:
+        var: currency.USA
