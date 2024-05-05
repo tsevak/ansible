@@ -1,0 +1,46 @@
+---
+- name: Conditional checks demo
+  hosts: Boxes
+  gather_facts: true
+  become: true
+
+  vars:
+    install_ftp: true
+
+  tasks:
+    - name: Install pkg based on boolean defined
+      ansible.builtin.yum:
+        name: vsftpd
+        state: present
+      when: install_ftp
+
+    - name: Multiple Conditional check - it executes as AND
+      ansible.builtin.yum:
+        name: httpd
+        state: absent
+      when:
+        - ansible_facts['os_family'] =="RedHat"
+        - ansible_facts['distribution_major_version'] == "8"
+
+    - name: One more example for Multiple Conditional checks - it print 'os_kernel_version' when Conditions matches
+      ansible.builtin.debug:
+        var: ansible_facts['kernel']
+      when:
+        - ansible_facts['os_family'] =="RedHat"
+        - install_ftp
+
+    - name: Let read a file contents
+      ansible.builtin.command:
+        cat /etc/hostname
+      register: file_output
+
+    - name: Let print file_output
+      ansible.builtin.debug:
+        var: file_output.stdout
+      when: file_output.stdout.find('node') != -1  ## it checks content
+
+    - name: With loop
+      ansible.builtin.command:
+        echo {{ item }}
+      loop: [1, 2, 3, 4, 5, 6, 7]
+      when: item > 3
