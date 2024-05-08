@@ -1,0 +1,20 @@
+---
+- name: Gather service facts
+  hosts: Boxes
+  gather_facts: true
+  become: true
+
+  vars:
+    svc:
+      - sshd
+      - vsftpd
+
+
+  tasks:
+    - name: Populate service facts
+      ansible.builtin.service_facts:
+
+    - name: Print service facts
+      ansible.builtin.debug:
+        var: ansible_facts.services["{{ item }}.service"].state
+      loop: "{{ svc }}"
