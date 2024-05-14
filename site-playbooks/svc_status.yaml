@@ -1,0 +1,16 @@
+---
+- name: Check status of multiple services
+  hosts: Boxes
+  gather_facts: yes
+
+  tasks:
+    - name: Get service facts
+      service_facts:
+
+    - name: Display service status
+      debug:
+        msg: "{{ item.key }} service is {{ item.value.state }}"
+      loop: "{{ ansible_facts.services|dict2items }}"
+      loop_control:
+        label: "{{ item.key }}"
+      when: item.key in ['vsftpd.service', 'crond.service', 'dbus.service']

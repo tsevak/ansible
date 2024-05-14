@@ -1,0 +1,16 @@
+---
+- name: Let find no of fils under directory
+  hosts: Boxes
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Find no of files under /etc
+      ansible.builtin.find:
+        paths: /etc
+        file_type: file
+      register: file_count
+
+    - name: Let print total_count output
+      ansible.builtin.debug:
+        var: file_count.examined
